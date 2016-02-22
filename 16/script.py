@@ -4,8 +4,8 @@ from matplotlib import cm
 import matplotlib.pyplot as plt
 import numpy as np
 
-nx = 41
-ny = 41
+nx = 71
+ny = 71
 nt = 10
 nit=50
 c = 1
@@ -21,7 +21,6 @@ F = 1
 dt = .001
 
 u = np.zeros((ny, nx))
-#u[ny/4:ny/2,nx/4:nx/2] = .01
 v = np.zeros((ny, nx))
 p = np.zeros((ny, nx)) 
 b = np.zeros((ny, nx))
@@ -88,6 +87,7 @@ def presPoisson(p, dx, dy, b):
         
     return p
 
+
 def channelFlow(nt, u, v, dt, dx, dy, p, rho, nu):
     un = np.empty_like(u)
     vn = np.empty_like(v)
@@ -152,17 +152,29 @@ def channelFlow(nt, u, v, dt, dx, dy, p, rho, nu):
                         (dt/dy**2*(vn[2:,0]-2*vn[1:-1,0]+vn[0:-2,0])))   
 
         #"Wall BC" u,v = 0 at y = 0,2 -->no slip boundary condition
-        u[0,:] = 0
+        u[0,:] = 0 #lower walls
+        v[0,:] = 0
         #u[:,0] = 0 
         #u[:,-1] = 0
-        u[-1,:] = 0    #set velocity on upper, lower walls = 0
-        v[0,:] = 0
+
+        #trying to create centuri nozzle
+        
+        #nozzle
+        u[0:ny/4,0:nx/4] = 0
+        u[3*ny/4:-1,:] = 0
+        v[0:ny/4,0:nx/4] = 0
+        v[3*ny/4:-1,:] = 0
+
+        #upper walls
+        u[-1,:] = 0    
         v[-1,:]=0
+        
         #v[:,0] = 0
         #v[:,-1] = 0 #x boundary conditions periodic, dealt with above...
         
         
     return u, v, p
+
 
 def channel(nt):
 
@@ -182,10 +194,11 @@ def channel(nt):
 
     return
 
-channel(25)
-channel(50)
-channel(75)
-channel(100)
-channel(499)
+
+# channel(25)
+# channel(50)
+# channel(75)
+# channel(100)
+# channel(499)
 channel(1500)
 plt.show()
