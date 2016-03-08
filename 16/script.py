@@ -16,8 +16,8 @@ y = np.linspace(0,2,ny)
 X,Y = np.meshgrid(x,y)
 
 rho = 1
-nu = .1
-F = 1
+nu = .01
+F = 2
 dt = .001
 
 u = np.zeros((ny, nx))
@@ -152,7 +152,7 @@ def channelFlow(nt, u, v, dt, dx, dy, p, rho, nu):
                         (dt/dy**2*(vn[2:,0]-2*vn[1:-1,0]+vn[0:-2,0])))   
 
         #"Wall BC" u,v = 0 at y = 0,2 -->no slip boundary condition
-        u[0,:] = 0 #lower walls
+        u[0,:] = 0 #lower walls or is this upper walls?
         v[0,:] = 0
         #u[:,0] = 0 
         #u[:,-1] = 0
@@ -160,10 +160,10 @@ def channelFlow(nt, u, v, dt, dx, dy, p, rho, nu):
         #trying to create centuri nozzle
         
         #nozzle
-        u[0:ny/4,0:nx/4] = 0
-        u[3*ny/4:-1,:] = 0
-        v[0:ny/4,0:nx/4] = 0
-        v[3*ny/4:-1,:] = 0
+        u[0:ny/2,0:nx/4] = 0 #bottom 
+        u[3*ny/4:-1,:] = 0 #top
+        v[0:ny/2,0:nx/4] = 0 #bottom
+        v[3*ny/4:-1,:] = 0 #top
 
         #upper walls
         u[-1,:] = 0    
@@ -187,7 +187,7 @@ def channel(nt):
     #plt.contourf(X,Y,p,alpha=0.5)    ###plotting the pressure field as a contour
     #plt.colorbar()
     #plt.contour(X,Y,p)               ###plotting the pressure field outlines
-    plt.quiver(X[::3,::3],Y[::3,::3],u[::3,::3],v[::3,::3]) ##plotting velocity ::3 --> only plot every 3rd data point
+    plt.quiver(X[::2,::2],Y[::2,::2],u[::2,::2],v[::2,::2]) ##plotting velocity ::3 --> only plot every 3rd data point
     plt.xlabel('X')
     plt.ylabel('Y')
 
